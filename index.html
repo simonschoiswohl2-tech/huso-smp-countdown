@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUSO SMP COUNTDOWN</title>
+    <style>
+        /* Minecraft-Schriftart aus dem Web laden */
+        @import url('https://cdnfonts.com');
+
+        body {
+            font-family: 'Minecraftia', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            /* Originalgetreuer, pixelierter Bedrock-/Dirt-Hintergrund */
+            background-image: url('https://unsplash.com');
+            background-size: 80px;
+            background-repeat: repeat;
+            image-rendering: pixelated;
+            overflow: hidden;
+        }
+
+        /* Dunkler, animierter Vignette-Effekt im Hintergrund für mehr Atmosphäre */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
+            z-index: -1;
+        }
+
+        .container {
+            text-align: center;
+            /* Der ikonische, dunkelgraue Minecraft-GUI-Container */
+            background: #c6c6c6; 
+            padding: 60px 50px;
+            /* Aufwändiger 3D-Pixel-Rahmen (oben/links hell, unten/rechts dunkel) */
+            border: 6px solid #000;
+            box-shadow: 
+                inset 6px 6px 0px #fff, 
+                inset -6px -6px 0px #555,
+                0 15px 0px rgba(0,0,0,0.6);
+            max-width: 850px;
+            width: 100%;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .titel {
+            font-size: 3.2rem;
+            font-weight: bold;
+            color: #ffff55; /* Klassisches leuchtendes Minecraft-Gelb (&e) */
+            margin: 0 0 40px 0;
+            /* Dunkelroter/Brauner Pixel-Schatten wie im echten Logo */
+            text-shadow: 5px 5px 0px #3f3f00; 
+            letter-spacing: 3px;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        /* Ein kleiner, pulsierender Minecraft-Splash-Text */
+        .splash {
+            color: #ffaa00;
+            font-size: 1.2rem;
+            position: absolute;
+            top: 110px;
+            right: 40px;
+            transform: rotate(-15deg);
+            text-shadow: 2px 2px 0px #3f2a00;
+            animation: pulsieren 0.5s infinite alternate;
+        }
+
+        .countdown {
+            font-size: 3.5rem; /* Größerer Fokus auf die verbleibende Zeit */
+            font-weight: bold;
+            color: #ffffff; /* Weiß wie die Item-Anzahl im Inventar */
+            background-color: #141414; /* Dunkler Kasten für den Timer */
+            padding: 20px;
+            border: 4px solid #3c3c3c;
+            box-shadow: inset 4px 4px 0px #000;
+            text-shadow: 4px 4px 0px #3f3f3f; 
+            letter-spacing: 2px;
+            display: inline-block;
+            min-width: 80%;
+        }
+
+        /* Die typische wackelnde Minecraft-Animation für den Splash-Text */
+        @keyframes pulsieren {
+            from { transform: rotate(-15deg) scale(1); }
+            to { transform: rotate(-15deg) scale(1.12); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Das Minecraft-Logo-Design -->
+    <h1 class="titel">HUSO SMP</h1>
+    <div class="splash">COUNTDOWN!</div>
+    
+    <!-- Die Anzeige im Stil des Chat-Fensters / Server-Menüs -->
+    <div class="countdown" id="timer">LÄDT...</div>
+</div>
+
+<script>
+    // Zieldatum gesetzt auf den 6. November 2026 um 21:00 Uhr
+    const zielDatum = new Date("2026-11-06T21:00:00").getTime();
+
+    const timerElement = document.getElementById('timer');
+
+    const countdownIntervall = setInterval(function() {
+        const jetzt = new Date().getTime();
+        const diff = zielDatum - jetzt;
+
+        const tage = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const stunden = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minuten = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const sekunden = Math.floor((diff % (1000 * 60)) / 1000);
+
+        const sTage = tage;
+        const sStunden = stunden < 10 ? '0' + stunden : stunden;
+        const sMinuten = minuten < 10 ? '0' + minuten : minuten;
+        const sSekunden = sekunden < 10 ? '0' + sekunden : sekunden;
+
+        // Farbcodierung: Wenn weniger als 1 Tag, wird der Timer Minecraft-Rot (&c)
+        if (tage <= 0) {
+            timerElement.style.color = "#ff5555";
+            timerElement.style.textShadow = "4px 4px 0px #3f0000";
+        }
+
+        if (tage > 0) {
+            timerElement.innerHTML = `${sTage}D ${sStunden}H ${sMinuten}M ${sSekunden}S`;
+        } else {
+            timerElement.innerHTML = `${sStunden}:${sMinuten}:${sSekunden}`;
+        }
+        
+        if (diff < 0) {
+            clearInterval(countdownIntervall);
+            timerElement.innerHTML = "START!";
+            timerElement.style.color = "#55ff55"; /* Minecraft Hellgrün (&a) */
+            timerElement.style.textShadow = "4px 4px 0px #003f00";
+        }
+    }, 1000);
+</script>
+
+</body>
+</html>
